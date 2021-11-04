@@ -408,5 +408,5 @@ class World(GraphWin):
         f.write("%d\n" % self.robbyRow)
         f.write("%d\n" % self.robbyCol)
         f.close()
-        print "Configuration saved in file %s" % configFilename
+        # print "Configuration saved in file %s" % configFilename
 
