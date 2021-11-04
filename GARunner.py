@@ -4,6 +4,7 @@ import math
 
 import robby 
 import numpy as np
+import matplotlib.pyplot as plt
 
 rw = robby.World(10,10)
 
@@ -42,6 +43,7 @@ def runGen(strategy, steps=STEPS, init=CANS):
             raise Exception("strategy contains a bad character: '%s'" % char)
     if type(steps) is not int or steps < 1:
         raise Exception("steps must be an integer > 0")
+
     if type(init) is str:
         # init is a config file
         rw.load(init)
@@ -69,7 +71,7 @@ for g in xrange(GENERATIONS):
 
     # loop over population
     for strategy in population: 
-        results.append((runGen(strategy), strategy))
+        results.append((runGen(strategy, steps=STEPS, init=CANS), strategy))
 
     # sort the results
     results.sort(key=lambda x: x[0], reverse=True)
@@ -95,12 +97,26 @@ for g in xrange(GENERATIONS):
 
     # select next generation / mutate / crossover -- Jack
     # take the top 4 from previous generation
-    newPopulation = population[:4]
+
+    indicies = []
+    newPopulation = population[:10]
     for p in range((len(population) - len(newPopulation)) // 2):
         # get parents
 
-        p = (np.array(list(reversed(range(len(population)))), dtype='float') + 1) / (len(population) * (len(population) + 1) / 2) 
+        # linear distribution
+        # raw_indicies = np.array(list(reversed(range(len(population)))), dtype='float') + 1
+
+        # exponential distribution
+        # raw_indicies = np.exp((500 - np.arange(0, len(population), 1, dtype='float')) / 90) - 25
+
+        # quadratic distribution
+        raw_indicies = np.array(list(reversed(range(len(population)))), dtype='float') ** 2
+
+        p = raw_indicies / np.sum(raw_indicies) 
         parent1, parent2 = np.random.choice(population, size=2, replace=False, p=p)
+
+        indicies.append(population.index(parent1))
+        indicies.append(population.index(parent2))
 
         # def randIndi(size):
         #     randNum = random.randint(0, size * (size - 1) / 2)
@@ -136,6 +152,14 @@ for g in xrange(GENERATIONS):
 
     population = newPopulation
     assert(len(population) == POP_SIZE)
+
+    # show index distribution for parent selection
+    # print('making histogram')
+    # print('num indicies:', len(indicies))
+    # plt.hist(indicies, density=True, bins=20)
+    # plt.show()
+    # print('made hist')
+    # raw_input()
 
 
 
