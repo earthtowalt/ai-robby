@@ -6,7 +6,7 @@ import Gnuplot
 
 g = None
 
-def plotGAoutput(filename="GAoutput.txt"):
+def plotGAoutput(filename="GAoutput_19-05-47.txt"):
     global g
     f = open(filename)
     g = Gnuplot.Gnuplot()
